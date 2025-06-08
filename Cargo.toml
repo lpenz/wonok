@@ -1,0 +1,31 @@
+[package]
+name = "wonok"
+description = "Atomically write the output of a command to a file depending on its exit value"
+version = "0.1.0"
+edition = "2024"
+authors = ["Leandro Lisboa Penz <lpenz@lpenz.org>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/lpenz/wonok"
+repository = "https://github.com/lpenz/wonok"
+categories = ["command-line-utilities"]
+keywords = ["command-line"]
+
+[dependencies]
+atomic-write-file = "0.2.3"
+clap = { version = "4.5.39", features = ["derive"] }
+color-eyre = "0.6.5"
+tracing = { version = "0.1.41", features = ["log"] }
+tracing-subscriber = { version = "0.3.19", features = ["env-filter", "tracing-log"] }
+
+[package.metadata.deb]
+section = "utils"
+extended-description = """\
+Atomically write the output of a command to a file depending on its exit value
+"""
+assets = [
+    ["target/release/wonok", "usr/bin/", "755"],
+    ["LICENSE", "usr/share/doc/wonok/", "644"],
+    ["AUTHORS", "usr/share/doc/wonok/", "644"],
+    ["README.md", "usr/share/doc/wonok/", "644"],
+]
