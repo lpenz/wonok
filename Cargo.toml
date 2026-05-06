@@ -8,6 +8,7 @@ license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/lpenz/wonok"
 repository = "https://github.com/lpenz/wonok"
+build = "build.rs"
 categories = ["command-line-utilities"]
 keywords = ["command-line"]
 
@@ -18,12 +19,19 @@ color-eyre = "0.6.5"
 tracing = { version = "0.1.41", features = ["log"] }
 tracing-subscriber = { version = "0.3.20", features = ["env-filter", "tracing-log"] }
 
+[build-dependencies]
+clap = { version = "4.5.39", features = ["derive"] }
+clap2man = "0.1.1"
+color-eyre = "0.6.5"
+man = "0.3.0"
+
 [package.metadata.deb]
 section = "utils"
 extended-description = """\
 Atomically write the output of a command to a file depending on its exit value
 """
 assets = [
+    ["target/release/wonok.1", "usr/share/man/man1/", "644"],
     ["target/release/wonok", "usr/bin/", "755"],
     ["LICENSE", "usr/share/doc/wonok/", "644"],
     ["AUTHORS", "usr/share/doc/wonok/", "644"],

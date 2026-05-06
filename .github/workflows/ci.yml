@@ -10,7 +10,7 @@ jobs:
       coveralls: true
       deb: true
       release_files: |
-        wonok
+        wonok wonok.1
       publish_cratesio: true
       publish_github_release: true
       publish_packagecloud_repository_deb: |
