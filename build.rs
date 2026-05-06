@@ -3,11 +3,15 @@
 // file 'LICENSE', which is part of this source code package.
 
 use clap::CommandFactory;
+use clap_complete::generate_to;
+use clap_complete::shells::Bash;
+use clap_complete::shells::Fish;
+use clap_complete::shells::Zsh;
 use color_eyre::{Result, eyre::eyre};
 use man::prelude::*;
 use std::env;
 use std::error::Error;
-use std::fs::{self, File};
+use std::fs::{self, File, OpenOptions};
 use std::io::Write;
 use std::path;
 
@@ -46,5 +50,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     // .
     // (either target/release or target/build)
     generate_man_page(&outdir)?;
+    // Generate shell completions:
+    let mut cmd = Cli::command();
+    generate_to(Bash, &mut cmd, "wonok", &outdir)?;
+    let path = generate_to(Fish, &mut cmd, "wonok", &outdir)?;
+    let mut fd = OpenOptions::new().append(true).open(path)?;
+    writeln!(fd, "complete -c wonok --wraps command")?;
+    writeln!(fd, "complete -c wonok --no-files")?;
+    generate_to(Zsh, &mut cmd, "wonok", &outdir)?;
     Ok(())
 }
