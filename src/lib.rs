@@ -2,6 +2,8 @@
 // This file is subject to the terms and conditions defined in
 // file 'LICENSE', which is part of this source code package.
 
+mod cli;
+
 use atomic_write_file::AtomicWriteFile;
 use clap::Parser;
 use color_eyre::Result;
@@ -51,23 +53,13 @@ fn run(output: &str, command: &[&str]) -> Result<ExitStatus> {
     }
 }
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Cli {
-    /// Output file
-    pub output: String,
-
-    /// The command to run; use stdin if empty (pipe mode)
-    pub command: Vec<String>,
-}
-
 pub fn main() -> Result<(), Box<dyn Error>> {
     color_eyre::install()?;
     tracing_subscriber::fmt()
         .with_span_events(tracing_subscriber::fmt::format::FmtSpan::ACTIVE)
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
-    let cli = Cli::parse();
+    let cli = cli::Cli::parse();
     let command: Vec<&str> = cli.command.iter().map(String::as_ref).collect();
     let exitstatus = run(&cli.output, &command)?;
     process::exit(exitstatus.code().unwrap_or(0));
