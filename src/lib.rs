@@ -40,14 +40,14 @@ fn run(output: &str, command: &[&str]) -> Result<ExitStatus> {
     let mut file = AtomicWriteFile::options().open(output)?;
     loop {
         let n = stdout.read(&mut buffer)?;
-        if n == 0 {
-            if let Some(result) = child.try_wait()? {
-                info!(msg="process exited", result=?result);
-                if result.success() {
-                    file.commit()?;
-                }
-                return Ok(result);
+        if n == 0
+            && let Some(result) = child.try_wait()?
+        {
+            info!(msg="process exited", result=?result);
+            if result.success() {
+                file.commit()?;
             }
+            return Ok(result);
         }
         file.write_all(&buffer[0..n])?;
     }
