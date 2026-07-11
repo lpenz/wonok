@@ -23,7 +23,7 @@ pub fn buildcmd(command: &[&str]) -> Command {
     cmd.args(command.iter().skip(1))
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
-        .stderr(Stdio::piped());
+        .stderr(Stdio::inherit());
     cmd
 }
 
