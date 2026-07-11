@@ -53,6 +53,23 @@ fn run(output: &str, command: &[&str]) -> Result<ExitStatus> {
     }
 }
 
+#[tracing::instrument(skip_all, ret, err)]
+fn run_pipe(output: &str) -> Result<()> {
+    info!(output = output, "pipe mode");
+    let stdin = std::io::stdin();
+    let mut stdin = stdin.lock();
+    let mut buffer: Vec<u8> = vec![0u8; 1024 * 1024 * 8];
+    let mut file = AtomicWriteFile::options().open(output)?;
+    loop {
+        let n = stdin.read(&mut buffer)?;
+        if n == 0 {
+            file.commit()?;
+            return Ok(());
+        }
+        file.write_all(&buffer[0..n])?;
+    }
+}
+
 pub fn main() -> Result<(), Box<dyn Error>> {
     color_eyre::install()?;
     tracing_subscriber::fmt()
@@ -61,6 +78,10 @@ pub fn main() -> Result<(), Box<dyn Error>> {
         .init();
     let cli = cli::Cli::parse();
     let command: Vec<&str> = cli.command.iter().map(String::as_ref).collect();
+    if command.is_empty() {
+        run_pipe(&cli.output)?;
+        process::exit(0);
+    }
     let exitstatus = run(&cli.output, &command)?;
     process::exit(exitstatus.code().unwrap_or(0));
 }
