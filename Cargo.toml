@@ -44,3 +44,15 @@ assets = [
     ["target/release/_wonok", "/usr/share/zsh/site-functions/", "644"],
     ["target/release/wonok.fish", "/usr/share/fish/vendor_completions.d/", "644"],
 ]
+
+[package.metadata.generate-rpm]
+assets = [
+    { source = "target/release/wonok.1", dest = "/usr/share/man/man1/", mode = "644" },
+    { source = "target/release/wonok", dest = "/usr/bin/", mode = "755" },
+    { source = "LICENSE", dest = "/usr/share/doc/wonok/", mode = "644" },
+    { source = "AUTHORS", dest = "/usr/share/doc/wonok/", mode = "644" },
+    { source = "README.md", dest = "/usr/share/doc/wonok/", mode = "644" },
+    { source = "target/release/wonok.bash", dest = "/usr/share/bash-completion/completions/", mode = "644" },
+    { source = "target/release/_wonok", dest = "/usr/share/zsh/site-functions/", mode = "644" },
+    { source = "target/release/wonok.fish", dest = "/usr/share/fish/vendor_completions.d/", mode = "644" },
+]
